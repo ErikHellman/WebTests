@@ -1,0 +1,106 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>Login Test</title>
+    <link rel="stylesheet" href="https://unpkg.com/material-components-web@latest/dist/material-components-web.min.css">
+    <link href="https://fonts.googleapis.com/css?family=Roboto:300,400,500" rel="stylesheet">
+    <script src="https://unpkg.com/material-components-web@latest/dist/material-components-web.min.js"></script>
+    <style>
+        button.with-margin {
+            margin: 1em;
+        }
+
+        .hidden {
+            display: none;
+        }
+
+        .blockVisible {
+            display: block;
+        }
+
+        div#login-field {
+            width: 25%;
+        }
+    </style>
+</head>
+<body class="mdc-typography">
+<h1 class="mdc-typography--headline4">Login Tests</h1>
+<p class="mdc-typography--body1	">
+    This is a simple test for verifying use of <code>localStorage</code>.
+</p>
+<p class="mdc-typography--body2">
+    If the text below shows the name you entered when first visiting this page, this test worked as expected.
+    If no text is showing, a valid "login" couldn't be detected.
+</p>
+<p id="welcome-message" class="mdc-typography--subtitle2">
+    Test
+</p>
+<div id="login-field" class="mdc-text-field hidden">
+    <input id="login-input"
+           class="mdc-text-field__input"
+           type="text"
+           placeholder="Enter your name here"
+           aria-label="Enter your name here">
+</div>
+<button id="login-button" class="with-margin mdc-button mdc-button--raised">Login</button>
+<button id="logout-button" class="with-margin mdc-button mdc-button--raised">Logout</button>
+</body>
+<script>
+  mdc.ripple.MDCRipple.attachTo(document.querySelector('button'))
+  const KEY = 'userName'
+
+  const welcomeMessage = document.querySelector('#welcome-message')
+  const loginField = document.querySelector('#login-field')
+  const loginInput = document.querySelector('#login-input')
+  const loginButton = document.querySelector('#login-button')
+  const logoutButton = document.querySelector('#logout-button')
+
+  function updateView () {
+    const userName = localStorage.getItem(KEY)
+
+    welcomeMessage.innerText = `Welcome back ${userName}!`
+
+    if (userName && userName.length > 0) {
+      loginField.classList.remove('blockVisible')
+      loginButton.classList.remove('blockVisible')
+      loginField.classList.add('hidden')
+      loginButton.classList.add('hidden')
+
+      welcomeMessage.classList.remove('hidden')
+      welcomeMessage.classList.add('blockVisible')
+      logoutButton.classList.remove('hidden')
+      logoutButton.classList.add('blockVisible')
+    } else {
+      loginField.classList.remove('hidden')
+      loginButton.classList.remove('hidden')
+      loginField.classList.add('blockVisible')
+      loginButton.classList.add('blockVisible')
+
+      welcomeMessage.classList.remove('blockVisible')
+      welcomeMessage.classList.add('hidden')
+      logoutButton.classList.remove('blockVisible')
+      logoutButton.classList.add('hidden')
+    }
+  }
+
+  loginButton.disabled = true
+  loginInput.addEventListener('input', e => {
+    loginButton.disabled = !(e.target.value && e.target.value.length > 0)
+  })
+
+  loginButton.addEventListener('click', e => {
+    if (loginInput.value && loginInput.value.length > 0) {
+      localStorage.setItem(KEY, loginInput.value)
+      updateView()
+    }
+  })
+
+  logoutButton.addEventListener('click', e => {
+    localStorage.clear()
+    updateView()
+  })
+
+  updateView()
+</script>
+</html>
